@@ -87,6 +87,9 @@ def test_all():
     assert total_count == 12
     assert users[0].username == 'user9'
 
+    assert users_repo.first()
+    assert users_repo.count() == 12
+
     # Paginate the results (order by username in ascending order)
     users, total_count = (
         users_repo.filter()
@@ -96,6 +99,14 @@ def test_all():
 
     with Session(engine) as session:
         assert users_repo(session).all()
+
+    users[0].username = '1'
+    users_repo.save_or_update(users[0])
+
+    users_repo.delete_all()
+
+    users = users_repo.all()
+    assert not users
 
 
 if __name__ == '__main__':
